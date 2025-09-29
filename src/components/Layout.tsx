@@ -31,7 +31,7 @@ export function Layout({ children }: LayoutProps) {
                 <Leaf className="h-6 w-6 text-white" />
               </div>
               <span className="text-xl font-bold text-gradient-primary">
-                Farm-to-Fork
+                Trace4Ag
               </span>
             </Link>
 
