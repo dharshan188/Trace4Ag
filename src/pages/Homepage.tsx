@@ -110,7 +110,7 @@ export default function Homepage() {
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
                 <span className="text-gradient-primary">Farm-to-Fork</span>
                 <br />
-                <span className="text-foreground">Transparency</span>
+                alt="Trace4Ag Supply Chain Journey"
               </h1>
               
               <p className="text-xl text-muted-foreground max-w-2xl mb-10 leading-relaxed">

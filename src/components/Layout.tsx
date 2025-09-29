@@ -111,11 +111,11 @@ export function Layout({ children }: LayoutProps) {
                 <Leaf className="h-5 w-5 text-white" />
               </div>
               <span className="text-lg font-semibold text-gradient-primary">
-                Farm-to-Fork Transparency Platform
+                Trace4Ag
               </span>
             </div>
             <p className="text-muted-foreground text-sm">
-              © 2025 Farm-to-Fork. Ensuring food transparency through blockchain technology.
+              © 2025 Trace4Ag. Ensuring food transparency through blockchain technology.
             </p>
           </div>
         </div>
