@@ -15,7 +15,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Noto Sans Devanagari", "Noto Sans Oriya", ...fontFamily.sans],
+        sans: ["Noto Sans Tamil", "Noto Sans Devanagari", "Noto Sans Oriya", ...fontFamily.sans],
       },
       colors: {
         border: "hsl(var(--border))",
