@@ -97,25 +97,19 @@ export default function ConsumerVerification() {
     );
 
     const onScanSuccess = (decodedText: string) => {
+      setIsScanning(false);
       try {
         const data = JSON.parse(decodedText);
-        // In a real app, you'd fetch the full product info from a backend using the batchId
         setProductInfo({
           ...data,
-          harvestDate: "2025-01-08", // Mock data
-          aiGrade: "Grade A", // Mock data
+          aiGrade: "Grade A", // Mock AI grade
           verified: true,
           tampered: false,
-          priceBreakdown: {
-            farmer: 45,
-            transport: 25,
-            retailer: 30,
-          },
+          priceBreakdown: { farmer: 45, transport: 25, retailer: 30 },
         });
-        setIsScanning(false);
       } catch (error) {
         console.error("Failed to parse QR code data:", error);
-        // Optionally, show an error to the user
+        alert("Invalid QR Code.");
       }
     };
 
@@ -133,30 +127,37 @@ export default function ConsumerVerification() {
   const handleManualEntry = () => {
     if (!batchId.trim()) return;
 
+    // First, try to parse the input as a full JSON object (from QR code data)
     try {
-      // Attempt to parse the input as JSON (simulating a QR scan for testing)
       const data = JSON.parse(batchId);
+      if (data && data.batchId && data.farmerName) {
+        setProductInfo({
+          ...data,
+          aiGrade: "Grade A", // Mock AI grade
+          verified: true,
+          tampered: false,
+          priceBreakdown: { farmer: 45, transport: 25, retailer: 30 },
+        });
+        return;
+      }
+    } catch (e) {
+      // Not a JSON object, proceed to localStorage lookup.
+    }
+
+    // If not a JSON object, look up the batch ID in localStorage
+    const storedData = localStorage.getItem(batchId);
+    if (storedData) {
+      const data = JSON.parse(storedData);
       setProductInfo({
         ...data,
-        harvestDate: "2025-01-08", // Mock data
-        aiGrade: "Grade A", // Mock data
+        aiGrade: "Grade A", // Mock AI grade
         verified: true,
         tampered: false,
         priceBreakdown: { farmer: 45, transport: 25, retailer: 30 },
       });
-    } catch (error) {
-      // If parsing fails, treat it as a manual batch ID entry (original mock behavior)
-      setProductInfo({
-        batchId: batchId,
-        farmerName: "Raj Kumar Singh (Manual)",
-        cropType: "Organic Tomatoes",
-        harvestDate: "2025-01-08",
-        location: "Green Valley Farm, Karnataka",
-        aiGrade: "Grade A",
-        verified: true,
-        tampered: false,
-        priceBreakdown: { farmer: 45, transport: 25, retailer: 30 },
-      });
+    } else {
+      alert("Batch ID not found.");
+      setProductInfo(null);
     }
   };
 
