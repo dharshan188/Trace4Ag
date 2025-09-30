@@ -24,6 +24,13 @@ export function LanguageSwitcher() {
       >
         ଓଡ଼ିଆ
       </Button>
+      <Button
+        variant={i18n.language === "hi" ? "default" : "ghost"}
+        size="sm"
+        onClick={() => changeLanguage("hi")}
+      >
+        हिन्दी
+      </Button>
     </div>
   );
 }
