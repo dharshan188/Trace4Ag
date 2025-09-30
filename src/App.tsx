@@ -9,7 +9,6 @@ import FarmerPortal from "./pages/FarmerPortal";
 import AggregatorDashboard from "./pages/AggregatorDashboard";
 import ConsumerVerification from "./pages/ConsumerVerification";
 import AdminDashboard from "./pages/AdminDashboard";
-import QRCodePage from "./pages/QRCodePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,7 +26,6 @@ const App = () => (
             <Route path="/aggregator" element={<AggregatorDashboard />} />
             <Route path="/consumer" element={<ConsumerVerification />} />
             <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/qr-code" element={<QRCodePage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
