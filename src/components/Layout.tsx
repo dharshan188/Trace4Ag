@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Leaf, QrCode, Users, BarChart3 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,6 +12,7 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { t } = useTranslation();
 
   const navigation = [
     { name: "Home", href: "/", icon: Leaf },
@@ -31,35 +34,39 @@ export function Layout({ children }: LayoutProps) {
                 <Leaf className="h-6 w-6 text-white" />
               </div>
               <span className="text-xl font-bold text-gradient-primary">
-                Trace4Ag
+                {t("Trace4Ag")}
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.href;
-                return (
-                  <Link key={item.name} to={item.href}>
-                    <Button
-                      variant={isActive ? "default" : "ghost"}
-                      className={`flex items-center space-x-2 ${
-                        isActive
-                          ? "gradient-primary text-white shadow-glow"
-                          : "hover:bg-muted/50"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span>{item.name}</span>
-                    </Button>
-                  </Link>
-                );
-              })}
-            </nav>
+            {/* Desktop Navigation & Actions */}
+            <div className="hidden md:flex items-center space-x-4">
+              <nav className="flex items-center space-x-1">
+                {navigation.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.href;
+                  return (
+                    <Link key={item.name} to={item.href}>
+                      <Button
+                        variant={isActive ? "default" : "ghost"}
+                        className={`flex items-center space-x-2 ${
+                          isActive
+                            ? "gradient-primary text-white shadow-glow"
+                            : "hover:bg-muted/50"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" />
+                        <span>{t(item.name)}</span>
+                      </Button>
+                    </Link>
+                  );
+                })}
+              </nav>
+              <LanguageSwitcher />
+            </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center space-x-2">
+              <LanguageSwitcher />
               <Button
                 variant="ghost"
                 size="sm"
@@ -89,7 +96,7 @@ export function Layout({ children }: LayoutProps) {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Icon className="h-4 w-4" />
-                      <span>{item.name}</span>
+                      <span>{t(item.name)}</span>
                     </Link>
                   );
                 })}
@@ -111,11 +118,11 @@ export function Layout({ children }: LayoutProps) {
                 <Leaf className="h-5 w-5 text-white" />
               </div>
               <span className="text-lg font-semibold text-gradient-primary">
-                Trace4Ag
+                {t("Trace4Ag")}
               </span>
             </div>
             <p className="text-muted-foreground text-sm">
-              © 2025 Trace4Ag. Ensuring food transparency through blockchain technology.
+              {t("footer_text")}
             </p>
           </div>
         </div>
