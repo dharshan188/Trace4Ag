@@ -20,7 +20,6 @@ export function Layout({ children }: LayoutProps) {
     { name: "Aggregator", href: "/aggregator", icon: Users },
     { name: "Consumer", href: "/consumer", icon: QrCode },
     { name: "Admin Dashboard", href: "/admin", icon: BarChart3 },
-    { name: "QR Code", href: "/qr-code", icon: QrCode },
   ];
 
   return (

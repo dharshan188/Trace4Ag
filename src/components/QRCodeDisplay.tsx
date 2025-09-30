@@ -1,14 +1,13 @@
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { QRCodeCanvas } from "qrcode.react";
 import { Button } from "@/components/ui/button";
-import { QrCode, Download, Copy, CheckCircle } from "lucide-react";
+import { Copy, Download } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface QRCodeDisplayProps {
   batchId: string;
   farmerName: string;
   cropType: string;
   location: string;
-  size?: number;
 }
 
 export function QRCodeDisplay({
@@ -16,116 +15,65 @@ export function QRCodeDisplay({
   farmerName,
   cropType,
   location,
-  size = 200,
 }: QRCodeDisplayProps) {
-  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
+  const qrData = JSON.stringify({ batchId, farmerName, cropType, location });
 
   const handleCopy = () => {
     navigator.clipboard.writeText(batchId);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    toast({
+      title: "Copied!",
+      description: "Batch ID has been copied to your clipboard.",
+    });
   };
 
   const handleDownload = () => {
-    // Mock download functionality
-    const link = document.createElement("a");
-    link.download = `qr-${batchId}.png`;
-    link.href = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
-    link.click();
-  };
-
-  // Generate QR pattern (mock visualization)
-  const generateQRPattern = () => {
-    const pattern = [];
-    for (let i = 0; i < 21; i++) {
-      const row = [];
-      for (let j = 0; j < 21; j++) {
-        // Create a deterministic pattern based on batch ID
-        const hash = (batchId.charCodeAt(0) + i + j) % 3;
-        row.push(hash === 0);
-      }
-      pattern.push(row);
+    const canvas = document.querySelector("canvas");
+    if (canvas) {
+      const url = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `qrcode-batch-${batchId}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
-    return pattern;
   };
-
-  const qrPattern = generateQRPattern();
 
   return (
-    <Card className="p-6 text-center hover-lift">
-      <div className="flex flex-col items-center space-y-4">
-        {/* QR Code Visual */}
-        <div className="relative">
-          <div className="p-4 bg-white rounded-xl shadow-medium border-2 border-accent/20">
-            <div
-              className="grid gap-0.5 bg-white p-2 rounded-lg"
-              style={{
-                gridTemplateColumns: `repeat(21, 1fr)`,
-                width: size,
-                height: size,
-              }}
-            >
-              {qrPattern.map((row, i) =>
-                row.map((cell, j) => (
-                  <div
-                    key={`${i}-${j}`}
-                    className={`aspect-square rounded-[0.5px] ${
-                      cell ? "bg-foreground" : "bg-white"
-                    }`}
-                  />
-                ))
-              )}
-            </div>
-          </div>
-          {/* Animated scan line overlay */}
-          <div className="absolute inset-0 scan-line rounded-xl pointer-events-none" />
+    <div className="p-6 bg-white border rounded-lg text-center shadow-md print:shadow-none">
+      <QRCodeCanvas
+        value={qrData}
+        size={256}
+        includeMargin={true}
+        className="mx-auto"
+      />
+      <div className="mt-6 text-left space-y-3">
+        <div>
+          <p className="text-sm font-medium text-gray-500">Batch ID</p>
+          <p className="font-mono text-lg text-gray-800">{batchId}</p>
         </div>
-
-        {/* Batch Information */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-gradient-primary">
-            Batch ID: {batchId}
-          </h3>
-          <div className="text-sm text-muted-foreground space-y-1">
-            <p><strong>Farmer:</strong> {farmerName}</p>
-            <p><strong>Crop:</strong> {cropType}</p>
-            <p><strong>Location:</strong> {location}</p>
-          </div>
+        <div>
+          <p className="text-sm font-medium text-gray-500">Farmer</p>
+          <p className="text-lg text-gray-800">{farmerName}</p>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleCopy}
-            className="hover-lift"
-          >
-            {copied ? (
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            ) : (
-              <Copy className="h-4 w-4" />
-            )}
-            {copied ? "Copied!" : "Copy ID"}
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDownload}
-            className="hover-lift"
-          >
-            <Download className="h-4 w-4" />
-            Download
-          </Button>
+        <div>
+          <p className="text-sm font-medium text-gray-500">Crop</p>
+          <p className="text-lg text-gray-800">{cropType}</p>
         </div>
-
-        {/* QR Icon indicator */}
-        <div className="flex items-center text-xs text-muted-foreground">
-          <QrCode className="h-4 w-4 mr-1" />
-          Scan with any QR reader
+        <div>
+          <p className="text-sm font-medium text-gray-500">Origin</p>
+          <p className="text-lg text-gray-800">{location}</p>
         </div>
       </div>
-    </Card>
+      <div className="mt-6 flex justify-center space-x-4 print:hidden">
+        <Button variant="outline" onClick={handleCopy}>
+          <Copy className="mr-2 h-4 w-4" /> Copy ID
+        </Button>
+        <Button variant="outline" onClick={handleDownload}>
+          <Download className="mr-2 h-4 w-4" /> Download
+        </Button>
+      </div>
+    </div>
   );
 }
