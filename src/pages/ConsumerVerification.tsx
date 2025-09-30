@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Html5QrcodeScanner } from "html5-qrcode";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,32 +87,77 @@ export default function ConsumerVerification() {
     }
   ];
 
-  const handleScan = () => {
-    setIsScanning(true);
+  useEffect(() => {
+    if (!isScanning) return;
 
-    setTimeout(() => {
-      setProductInfo({
-        batchId: batchId || "FB-DEMO123",
-        farmerName: "Raj Kumar Singh",
-        cropType: "Organic Tomatoes",
-        harvestDate: "2025-01-08",
-        location: "Green Valley Farm, Karnataka",
-        aiGrade: "Grade A",
-        verified: true,
-        tampered: false,
-        priceBreakdown: {
-          farmer: 45,
-          transport: 25,
-          retailer: 30
-        }
-      });
+    const scanner = new Html5QrcodeScanner(
+      "reader",
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      false
+    );
+
+    const onScanSuccess = (decodedText: string) => {
       setIsScanning(false);
-    }, 2000);
-  };
+      try {
+        const data = JSON.parse(decodedText);
+        setProductInfo({
+          ...data,
+          aiGrade: "Grade A", // Mock AI grade
+          verified: true,
+          tampered: false,
+          priceBreakdown: { farmer: 45, transport: 25, retailer: 30 },
+        });
+      } catch (error) {
+        console.error("Failed to parse QR code data:", error);
+        alert("Invalid QR Code.");
+      }
+    };
+
+    const onScanFailure = (error: any) => {
+      // console.warn(`QR error = ${error}`);
+    };
+
+    scanner.render(onScanSuccess, onScanFailure);
+
+    return () => {
+      scanner.clear().catch(err => console.error("Scanner clear failed", err));
+    };
+  }, [isScanning]);
 
   const handleManualEntry = () => {
-    if (batchId.trim()) {
-      handleScan();
+    if (!batchId.trim()) return;
+
+    // First, try to parse the input as a full JSON object (from QR code data)
+    try {
+      const data = JSON.parse(batchId);
+      if (data && data.batchId && data.farmerName) {
+        setProductInfo({
+          ...data,
+          aiGrade: "Grade A", // Mock AI grade
+          verified: true,
+          tampered: false,
+          priceBreakdown: { farmer: 45, transport: 25, retailer: 30 },
+        });
+        return;
+      }
+    } catch (e) {
+      // Not a JSON object, proceed to localStorage lookup.
+    }
+
+    // If not a JSON object, look up the batch ID in localStorage
+    const storedData = localStorage.getItem(batchId);
+    if (storedData) {
+      const data = JSON.parse(storedData);
+      setProductInfo({
+        ...data,
+        aiGrade: "Grade A", // Mock AI grade
+        verified: true,
+        tampered: false,
+        priceBreakdown: { farmer: 45, transport: 25, retailer: 30 },
+      });
+    } else {
+      alert("Batch ID not found.");
+      setProductInfo(null);
     }
   };
 
@@ -150,32 +196,27 @@ export default function ConsumerVerification() {
             <CardContent>
               <div className="space-y-6">
                 {/* QR Scanner */}
-                <div className="text-center">
-                  <div className={`border-4 border-dashed ${isScanning ? 'border-accent animate-glow-pulse' : 'border-muted'} rounded-xl p-12 mb-6 transition-all duration-300`}>
-                    <Scan className={`h-20 w-20 mx-auto mb-4 ${isScanning ? 'text-accent animate-bounce-gentle' : 'text-muted-foreground'}`} />
-                    {isScanning ? (
-                      <div className="space-y-3">
-                        <div className="text-xl font-semibold text-accent">Verifying Product...</div>
-                        <div className="scan-line h-2 bg-accent/30 rounded-full"></div>
-                        <p className="text-sm text-muted-foreground">Checking blockchain records</p>
-                      </div>
-                    ) : (
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">Scan Product QR Code</h3>
-                        <p className="text-muted-foreground">
-                          Point your camera at the QR code on the product
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  <Button
-                    onClick={handleScan}
-                    disabled={isScanning}
-                    className="gradient-primary text-white hover-glow px-8 py-4 text-lg mb-6"
-                  >
-                    {isScanning ? "Scanning..." : "Start Camera Scan"}
-                  </Button>
+                <div className="space-y-4">
+                  {isScanning ? (
+                    <div>
+                      <div id="reader" className="w-full"></div>
+                      <Button
+                        onClick={() => setIsScanning(false)}
+                        variant="destructive"
+                        className="w-full mt-4"
+                      >
+                        Stop Scan
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={() => setIsScanning(true)}
+                      className="w-full gradient-primary text-white hover-glow py-6 text-lg"
+                    >
+                      <Scan className="mr-2 h-5 w-5" />
+                      Start Camera Scan
+                    </Button>
+                  )}
                 </div>
 
                 {/* Manual Entry */}
@@ -201,6 +242,7 @@ export default function ConsumerVerification() {
                     onClick={handleManualEntry}
                     disabled={!batchId.trim() || isScanning}
                     className="gradient-accent text-accent-foreground"
+                    aria-label="Search"
                   >
                     <Search className="h-4 w-4" />
                   </Button>

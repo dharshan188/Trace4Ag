@@ -31,13 +31,6 @@ export function LanguageSwitcher() {
       >
         हिन्दी
       </Button>
-      <Button
-        variant={i18n.language === "ta" ? "default" : "ghost"}
-        size="sm"
-        onClick={() => changeLanguage("ta")}
-      >
-        தமிழ்
-      </Button>
     </div>
   );
 }
