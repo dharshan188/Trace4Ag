@@ -16,75 +16,78 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-image.jpg";
+import { useTranslation } from "react-i18next";
 
 export default function Homepage() {
+  const { t } = useTranslation();
+
   const features = [
     {
       icon: Shield,
-      title: "Blockchain Security",
-      description: "Immutable records ensure complete transparency from farm to fork.",
+      title: t("feature_1_title"),
+      description: t("feature_1_desc"),
       color: "text-green-600 bg-green-100"
     },
     {
       icon: QrCode,
-      title: "QR Code Tracking",
-      description: "Instant verification with any smartphone camera.",
+      title: t("feature_2_title"),
+      description: t("feature_2_desc"),
       color: "text-blue-600 bg-blue-100"
     },
     {
       icon: BarChart3,
-      title: "Real-time Analytics", 
-      description: "Live monitoring and anomaly detection across the supply chain.",
+      title: t("feature_3_title"),
+      description: t("feature_3_desc"),
       color: "text-purple-600 bg-purple-100"
     },
     {
       icon: MapPin,
-      title: "Geo-location Verification",
-      description: "GPS tracking prevents tampering and ensures authenticity.",
+      title: t("feature_4_title"),
+      description: t("feature_4_desc"),
       color: "text-orange-600 bg-orange-100"
     }
   ];
 
   const userTypes = [
     {
-      title: "Farmers",
+      title: t("portal_farmer_title"),
       icon: Leaf,
-      description: "Register crops and generate QR codes",
-      features: ["Crop registration", "QR generation", "AI quality grading"],
+      description: t("portal_farmer_desc"),
+      features: [t("portal_farmer_feat_1"), t("portal_farmer_feat_2"), t("portal_farmer_feat_3")],
       href: "/farmer",
       gradient: "gradient-primary"
     },
     {
-      title: "Aggregators",
+      title: t("portal_aggregator_title"),
       icon: Truck,
-      description: "Track and log supply chain events",
-      features: ["QR scanning", "Weather logging", "Event tracking"],
+      description: t("portal_aggregator_desc"),
+      features: [t("portal_aggregator_feat_1"), t("portal_aggregator_feat_2"), t("portal_aggregator_feat_3")],
       href: "/aggregator", 
       gradient: "gradient-accent"
     },
     {
-      title: "Consumers",
+      title: t("portal_consumer_title"),
       icon: Users,
-      description: "Verify product authenticity and journey",
-      features: ["Product verification", "Journey timeline", "Price transparency"],
+      description: t("portal_consumer_desc"),
+      features: [t("portal_consumer_feat_1"), t("portal_consumer_feat_2"), t("portal_consumer_feat_3")],
       href: "/consumer",
       gradient: "gradient-primary"
     },
     {
-      title: "Administrators",
+      title: t("portal_admin_title"),
       icon: Store,
-      description: "Monitor and audit the entire ecosystem", 
-      features: ["Analytics dashboard", "Anomaly detection", "Export reports"],
+      description: t("portal_admin_desc"),
+      features: [t("portal_admin_feat_1"), t("portal_admin_feat_2"), t("portal_admin_feat_3")],
       href: "/admin",
       gradient: "gradient-accent"
     }
   ];
 
   const stats = [
-    { label: "Verified Batches", value: "12,847", icon: CheckCircle },
-    { label: "Active Farmers", value: "2,341", icon: Leaf },
-    { label: "Supply Chain Events", value: "156,932", icon: Zap },
-    { label: "Consumer Scans", value: "89,245", icon: QrCode }
+    { label: t("stat_batches"), value: "12,847", icon: CheckCircle },
+    { label: t("stat_farmers"), value: "2,341", icon: Leaf },
+    { label: t("stat_events"), value: "156,932", icon: Zap },
+    { label: t("stat_scans"), value: "89,245", icon: QrCode }
   ];
 
   return (
@@ -104,24 +107,23 @@ export default function Homepage() {
             {/* Hero Text */}
             <div className="animate-fade-in">
               <Badge className="gradient-accent text-accent-foreground mb-6 text-sm px-4 py-2">
-                🚀 Revolutionizing Food Transparency
+                {t("hero_badge")}
               </Badge>
               
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-                <span className="text-gradient-primary">Farm-to-Fork</span>
+                <span className="text-gradient-primary">{t("hero_title_1")}</span>
                 <br />
-                alt="Trace4Ag Supply Chain Journey"
+                {t("hero_title_2")}
               </h1>
               
               <p className="text-xl text-muted-foreground max-w-2xl mb-10 leading-relaxed">
-                Complete supply chain visibility through blockchain technology, AI-powered quality assessment, 
-                and real-time tracking. Ensure food safety and authenticity at every step.
+                {t("hero_subtitle")}
               </p>
               
               <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-6">
                 <Link to="/farmer">
                   <Button size="lg" className="gradient-primary text-white hover-glow px-8 py-4 text-lg">
-                    Get Started
+                    {t("get_started")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
@@ -129,7 +131,7 @@ export default function Homepage() {
                 <Link to="/consumer">
                   <Button variant="outline" size="lg" className="glass-button px-8 py-4 text-lg">
                     <QrCode className="mr-2 h-5 w-5" />
-                    Verify Product
+                    {t("verify_product")}
                   </Button>
                 </Link>
               </div>
@@ -140,7 +142,7 @@ export default function Homepage() {
               <div className="relative rounded-2xl overflow-hidden shadow-strong hover-lift">
                 <img 
                   src={heroImage} 
-                  alt="Farm-to-Fork Supply Chain Journey" 
+                  alt={t("hero_image_alt")}
                   className="w-full h-auto object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent"></div>
@@ -192,10 +194,10 @@ export default function Homepage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gradient-primary mb-4">
-              Why Choose Our Platform?
+              {t("features_title")}
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Advanced technology meets agricultural transparency for a safer food supply chain.
+              {t("features_subtitle")}
             </p>
           </div>
 
@@ -227,10 +229,10 @@ export default function Homepage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gradient-primary mb-4">
-              Choose Your Portal
+              {t("portals_title")}
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Access role-specific dashboards tailored for each participant in the supply chain.
+              {t("portals_subtitle")}
             </p>
           </div>
 
@@ -261,7 +263,7 @@ export default function Homepage() {
                         ))}
                       </ul>
                       <Button className="w-full mt-4 group-hover:bg-primary/90 transition-colors">
-                        Access Portal
+                        {t("access_portal")}
                         <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </CardContent>
