@@ -49,5 +49,14 @@
   "portal_admin_feat_1": "Analytics dashboard",
   "portal_admin_feat_2": "Anomaly detection",
   "portal_admin_feat_3": "Export reports",
-  "access_portal": "Access Portal"
+  "access_portal": "Access Portal",
+  "QR Code": "QR Code",
+  "qr_code_page_title": "QR Code Page",
+  "qr_code_generator": "QR Code Generator",
+  "enter_data_for_qr_code": "Enter data for QR code",
+  "generate_qr_code": "Generate QR Code",
+  "qr_code_scanner": "QR Code Scanner",
+  "start_scanner": "Start Scanner",
+  "stop_scanner": "Stop Scanner",
+  "scanned_data": "Scanned Data"
 }
